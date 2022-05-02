@@ -23,7 +23,7 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key:
+          keys:
             - app-{{ checksum "package.json" }}
 
   deploy-to-aws-s3:
