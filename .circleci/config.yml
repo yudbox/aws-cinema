@@ -96,9 +96,11 @@ jobs:
             elif [ "${CIRCLE_BRANCH}" == "staging" ]
             then
               echo "inside staging"
-              echo  ${AWS_CLOUDFRONT_DISTRIBUTION_ID_STAGING}
+              echo  "AWS_CLOUDFRONT_DISTRIBUTION_ID_STAGING -  ${AWS_CLOUDFRONT_DISTRIBUTION_ID_STAGING}"
               aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID_STAGING} --paths /\*
             else
+              echo "inside staging"
+              echo  "AWS_CLOUDFRONT_DISTRIBUTION_ID_DEV -  ${AWS_CLOUDFRONT_DISTRIBUTION_ID_DEV}"
               aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID_DEV} --paths /\*
             fi
 
