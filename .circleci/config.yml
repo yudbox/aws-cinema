@@ -54,12 +54,12 @@ jobs:
           command: |
             if [ "${CURRENT_BRANCH}" == "master" ]
             then
-              aws--region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME_PROD} --delete
+              aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME_PROD} --delete
             elif [ "${CURRENT_BRANCH}" == "staging" ]
             then
-              aws--region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME_STAGING} --delete
+              aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME_STAGING} --delete
             else
-              aws--region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME_DEV} --delete
+              aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME_DEV} --delete
             fi
 
   deploy-to-aws-cloudfront:
