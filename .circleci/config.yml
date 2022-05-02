@@ -92,6 +92,8 @@ jobs:
             aws configure set preview.cloudfront true
             if [ "${CIRCLE_BRANCH}" == "master" ]
             then
+              echo "inside staging"
+              echo  ${AWS_CLOUDFRONT_DISTRIBUTION_ID_STAGING}
               aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID_PROD} --paths /\*
             elif [ "${CIRCLE_BRANCH}" == "staging" ]
             then
