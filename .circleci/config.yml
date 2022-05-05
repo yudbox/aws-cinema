@@ -23,26 +23,25 @@ executors:
 # -
 # -
 aliases:
-  - &show-current-branch-name
-  # CIRCLE_BRANCH это встроенная переменная circleci
+  - &show-current-branch-name # CIRCLE_BRANCH это встроенная переменная circleci
     run:
       name: Show current branch
       command: echo ${CIRCLE_BRANCH}
-  - &rectore-cache
-  # restore_cache позволяет переиспользовать кеш app-{{ checksum "package.json" }}
-  # 1. проверяем есть ли какие-то данные в app-{{ checksum "package.json" }}, если точного совпадения нет то
-  # 2. применяется любой кеш которовый начинается с имени app-и-любое-имя-дальше
+  - &restore-cache
+    # restore_cache позволяет переиспользовать кеш app-{{ checksum "package.json" }}
+    # 1. проверяем есть ли какие-то данные в app-{{ checksum "package.json" }}, если точного совпадения нет то
+    # 2. применяется любой кеш которовый начинается с имени app-и-любое-имя-дальше
     restore_cache:
       keys:
         - app-{{ checksum "package.json" }}
         - app-
   - &save-cache
-  # myapp-{{ checksum "filename" }} это специальная кодировка которая позволяет найти файл или папку относительно корневой директории
-  # кеш будет регенерироваться каждый раз, когда что-то изменяется в файле package.json, но для всех веток будет одинаков
-  # если написать имя myapp-{{ .Branch }}-{{ checksum "package-lock.json" }}
-  # кеш будет регенерироваться каждый раз, когда что-то изменяется в файле package.json и когда изменится ветка при деплои
-  #  save_cache сохраняет папку node_modules целиком со всеми зависимостями в кеш в переменную app-{{ checksum "package.json" }}
-  #  если далее будут другие save_cache
+    # myapp-{{ checksum "filename" }} это специальная кодировка которая позволяет найти файл или папку относительно корневой директории
+    # кеш будет регенерироваться каждый раз, когда что-то изменяется в файле package.json, но для всех веток будет одинаков
+    # если написать имя myapp-{{ .Branch }}-{{ checksum "package-lock.json" }}
+    # кеш будет регенерироваться каждый раз, когда что-то изменяется в файле package.json и когда изменится ветка при деплои
+    #  save_cache сохраняет папку node_modules целиком со всеми зависимостями в кеш в переменную app-{{ checksum "package.json" }}
+    #  если далее будут другие save_cache
     save_cache:
       paths:
         - node_modules
@@ -51,8 +50,7 @@ aliases:
     run:
       name: Insatll dependencies
       command: npm install
-  - &install-aws-cli
-  # запускаем команду установки awscli а затем python3-pip python-dev-is-python3 build-essential в корневую дерикторию "/"
+  - &install-aws-cli # запускаем команду установки awscli а затем python3-pip python-dev-is-python3 build-essential в корневую дерикторию "/"
     run:
       name: Installing AWS CLI
       working_directory: /
@@ -61,8 +59,8 @@ aliases:
         sudo apt-get install -y awscli
         sudo apt-get install -y python3-pip python-dev-is-python3 build-essential
   - &build-react-project
-  #  здесь создается папка build с помощью команды npm run build и эта папака архивируется в zip архив 
-  #  для загрузки ее на AWS сервис S3 bucket
+    #  здесь создается папка build с помощью команды npm run build и эта папака архивируется в zip архив
+    #  для загрузки ее на AWS сервис S3 bucket
     run:
       name: Build projects
       command: |
@@ -83,7 +81,6 @@ jobs:
       - *install-dependencies # вызов алиаса по имени
       - *save-cache # вызов алиаса по имени
 
-
   linting:
     #  использование экзекъютера
     executor: docker-executor
@@ -95,7 +92,6 @@ jobs:
           name: Run linting
           command: npm run lint
 
-
   deploy-to-aws-s3:
     #  использование экзекъютера
     executor: docker-executor
@@ -105,7 +101,7 @@ jobs:
       - *install-aws-cli # вызов алиаса по имени
       - *build-react-project # вызов алиаса по имени
       - run:
-      # в зависимости от имени ветки запускаем команду для деплоя сбилженого проекта на AWS сервис S3 bucket
+          # в зависимости от имени ветки запускаем команду для деплоя сбилженого проекта на AWS сервис S3 bucket
           name: Deploy to AWS S3
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]
@@ -127,12 +123,12 @@ jobs:
       - *install-aws-cli # вызов алиаса по имени
       - *build-react-project # вызов алиаса по имени
       - run:
-            # в зависимости от имени ветки запускаем команду для перезапуска кеширования на облаке
-            # cloudfront это сервис который позволяет кешировать сайты или чаще всего статические картинки которые редко меняются для первой загрузки с сервера
-            # это нужно для того чтоб в удаленных уголках мира загрузка сайта происходила быстрее, если у нас сервер находится во Франкфурте а пользовотель
-            # заходит на сайт где-то в индонезии то AWS кеширует наш сайт или статику в разных уголках мира (где есть Edge Location) и загрузка происходит быстрее
-            # СDN (Cloud Delivery Network) это сеть Edge Location которые хранят кеш сайтов
-            # в AWS кеш по умолчанию хранится 24 часа в данной команде мы сбрасываем кеш (создаем инвалидацию) create-invalidation котороая обновит кеш загруженный в S3 bucket
+          # в зависимости от имени ветки запускаем команду для перезапуска кеширования на облаке
+          # cloudfront это сервис который позволяет кешировать сайты или чаще всего статические картинки которые редко меняются для первой загрузки с сервера
+          # это нужно для того чтоб в удаленных уголках мира загрузка сайта происходила быстрее, если у нас сервер находится во Франкфурте а пользовотель
+          # заходит на сайт где-то в индонезии то AWS кеширует наш сайт или статику в разных уголках мира (где есть Edge Location) и загрузка происходит быстрее
+          # СDN (Cloud Delivery Network) это сеть Edge Location которые хранят кеш сайтов
+          # в AWS кеш по умолчанию хранится 24 часа в данной команде мы сбрасываем кеш (создаем инвалидацию) create-invalidation котороая обновит кеш загруженный в S3 bucket
           name: Deploy to AWS Cloudfront
           command: |
             aws configure set preview.cloudfront true
