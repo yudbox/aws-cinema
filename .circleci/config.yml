@@ -13,7 +13,7 @@ executors:
       # https://circleci.com/developer/images/image/cimg/node
       # это специальный образ с DockerHub для circleci
       - image: cimg/node:16.15.0
-      # указываю корневую папку где проект circleci будет развернут
+      # указываю корневую папку где проект circleci будет развернут /home/circleci/repo/
     working_directory: ~/repo
 
 # aliases это участки кода которые можно положить в переменную
