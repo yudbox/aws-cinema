@@ -1,55 +1,111 @@
 version: 2.1
 
-jobs:
-  build:
+# executors это участки кода которые можно переиспользовать
+# -
+# -
+# -
+# -
+# -
+executors:
+  #  имя экзекъютера
+  docker-executor:
     docker:
       # https://circleci.com/developer/images/image/cimg/node
       # это специальный образ с DockerHub для circleci
       - image: cimg/node:16.15.0
-      # указываю где образ будет хранится в моем circleci проекте
+      # указываю корневую папку где проект circleci будет развернут
     working_directory: ~/repo
+
+# aliases это участки кода которые можно положить в переменную
+# -
+# -
+# -
+# -
+# -
+aliases:
+  - &show-current-branch-name
+  # CIRCLE_BRANCH это встроенная переменная circleci
+    run:
+      name: Show current branch
+      command: echo ${CIRCLE_BRANCH}
+  - &rectore-cache
+  # restore_cache позволяет переиспользовать кеш app-{{ checksum "package.json" }}
+  # 1. проверяем есть ли какие-то данные в app-{{ checksum "package.json" }}, если точного совпадения нет то
+  # 2. применяется любой кеш которовый начинается с имени app-и-любое-имя-дальше
+    restore_cache:
+      keys:
+        - app-{{ checksum "package.json" }}
+        - app-
+  - &save-cache
+  # myapp-{{ checksum "filename" }} это специальная кодировка которая позволяет найти файл или папку относительно корневой директории
+  # кеш будет регенерироваться каждый раз, когда что-то изменяется в файле package.json, но для всех веток будет одинаков
+  # если написать имя myapp-{{ .Branch }}-{{ checksum "package-lock.json" }}
+  # кеш будет регенерироваться каждый раз, когда что-то изменяется в файле package.json и когда изменится ветка при деплои
+  #  save_cache сохраняет папку node_modules целиком со всеми зависимостями в кеш в переменную app-{{ checksum "package.json" }}
+  #  если далее будут другие save_cache
+    save_cache:
+      paths:
+        - node_modules
+      key: app-{{ checksum "package.json" }}
+  - &install-dependencies
+    run:
+      name: Insatll dependencies
+      command: npm install
+  - &install-aws-cli
+  # запускаем команду установки awscli а затем python3-pip python-dev-is-python3 build-essential в корневую дерикторию "/"
+    run:
+      name: Installing AWS CLI
+      working_directory: /
+      command: |
+        sudo apt-get -y -qq update
+        sudo apt-get install -y awscli
+        sudo apt-get install -y python3-pip python-dev-is-python3 build-essential
+  - &build-react-project
+  #  здесь создается папка build с помощью команды npm run build и эта папака архивируется в zip архив 
+  #  для загрузки ее на AWS сервис S3 bucket
+    run:
+      name: Build projects
+      command: |
+        npm install
+        npm run build
+        cd build
+        zip ../build.zip -r * .[^.]*
+        echo "Build succesful "
+
+jobs:
+  build:
+    #  использование экзекъютера
+    executor: docker-executor
     steps:
       - checkout
+      - *show-current-branch-name # вызов алиаса по имени
+      - *restore-cache # вызов алиаса по имени
+      - *install-dependencies # вызов алиаса по имени
+      - *save-cache # вызов алиаса по имени
+
+
+  linting:
+    #  использование экзекъютера
+    executor: docker-executor
+    steps:
+      - checkout
+      - *show-current-branch-name # вызов алиаса по имени
+      - *restore-cache # ниже не нужно созранять node_modules в кеш т.к. это сделано в джобсе build
       - run:
-          name: Show current branch
-          command: echo ${CIRCLE_BRANCH}
-      - restore_cache:
-          keys:
-            - app-{{ checksum "package.json" }}
-            - app-
-      - run:
-          name: Insatll dependencies
-          command: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: app-{{ checksum "package.json" }}
+          name: Run linting
+          command: npm run lint
+
 
   deploy-to-aws-s3:
-    docker:
-      - image: cimg/node:16.15.0
-    working_directory: ~/repo
+    #  использование экзекъютера
+    executor: docker-executor
     steps:
       - checkout
+      - *show-current-branch-name # вызов алиаса по имени
+      - *install-aws-cli # вызов алиаса по имени
+      - *build-react-project # вызов алиаса по имени
       - run:
-          name: Show current branch in deploy
-          command: echo ${CIRCLE_BRANCH}
-      - run:
-          name: Installing AWS CLI
-          working_directory: /
-          command: |
-            sudo apt-get -y -qq update
-            sudo apt-get install -y awscli
-            sudo apt-get install -y python3-pip python-dev-is-python3 build-essential
-      - run:
-          name: Build projects
-          command: |
-            npm install
-            npm run build
-            cd build
-            zip ../build.zip -r * .[^.]*
-            echo "Build succesful "
-      - run:
+      # в зависимости от имени ветки запускаем команду для деплоя сбилженого проекта на AWS сервис S3 bucket
           name: Deploy to AWS S3
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]
@@ -63,30 +119,20 @@ jobs:
             fi
 
   deploy-to-aws-cloudfront:
-    docker:
-      - image: cimg/node:16.15.0
-    working_directory: ~/repo
+    #  использование экзекъютера
+    executor: docker-executor
     steps:
       - checkout
+      - *show-current-branch-name # вызов алиаса по имени
+      - *install-aws-cli # вызов алиаса по имени
+      - *build-react-project # вызов алиаса по имени
       - run:
-          name: Show current branch in deploy
-          command: echo ${CIRCLE_BRANCH}
-      - run:
-          name: Installing AWS CLI
-          working_directory: /
-          command: |
-            sudo apt-get -y -qq update
-            sudo apt-get install -y awscli
-            sudo apt-get install -y python3-pip python-dev-is-python3 build-essential
-      - run:
-          name: Build projects
-          command: |
-            npm install
-            npm run build
-            cd build
-            zip ../build.zip -r * .[^.]*
-            echo "Build succesful "
-      - run:
+            # в зависимости от имени ветки запускаем команду для перезапуска кеширования на облаке
+            # cloudfront это сервис который позволяет кешировать сайты или чаще всего статические картинки которые редко меняются для первой загрузки с сервера
+            # это нужно для того чтоб в удаленных уголках мира загрузка сайта происходила быстрее, если у нас сервер находится во Франкфурте а пользовотель
+            # заходит на сайт где-то в индонезии то AWS кеширует наш сайт или статику в разных уголках мира (где есть Edge Location) и загрузка происходит быстрее
+            # СDN (Cloud Delivery Network) это сеть Edge Location которые хранят кеш сайтов
+            # в AWS кеш по умолчанию хранится 24 часа в данной команде мы сбрасываем кеш (создаем инвалидацию) create-invalidation котороая обновит кеш загруженный в S3 bucket
           name: Deploy to AWS Cloudfront
           command: |
             aws configure set preview.cloudfront true
@@ -95,22 +141,32 @@ jobs:
               aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID_PROD} --paths /\*
             elif [ "${CIRCLE_BRANCH}" == "staging" ]
             then
-              echo "inside staging"
-              echo  "AWS_CLOUDFRONT_DISTRIBUTION_ID_STAGING -  ${AWS_CLOUDFRONT_DISTRIBUTION_ID_STAGING}"
               aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID_STAGING} --paths /\*
             else
-              echo "inside staging"
-              echo  "AWS_CLOUDFRONT_DISTRIBUTION_ID_DEV -  ${AWS_CLOUDFRONT_DISTRIBUTION_ID_DEV}"
               aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID_DEV} --paths /\*
             fi
 
+  # workflows указывает порядок работы наших jobs описаных выше
+  # срабатывают все сразу если не указать зависимости requires
+  # начнется с build -> deploy-to-aws-s3 -> deploy-to-aws-cloudfront
+  # filters указывают при каких событиях jobs должны запускаться
+  # В моем случае - только на событиях в ветках master, staging nad develop
 workflows:
   build_and_deploy:
     jobs:
       - build
-      - deploy-to-aws-s3:
+      - linting:
           requires:
             - build
+          filters:
+            branches:
+              only:
+                - develop
+                - staging
+                - master
+      - deploy-to-aws-s3:
+          requires:
+            - linting
           filters:
             branches:
               only:
