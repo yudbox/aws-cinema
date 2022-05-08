@@ -199,11 +199,7 @@ jobs:
                       "type": "mrkdwn",
                       "text": "*Branch*:\n${CIRCLE_BRANCH}"
                     },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*When*:\n${date +'%m/%d/%Y %T'}"
-                    },
-                    {
+                       {
                       "type": "mrkdwn",
                       "text": "*Build*:\n${CIRCLE_BUILD_NUM}"
                     }
