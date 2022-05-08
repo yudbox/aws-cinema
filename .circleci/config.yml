@@ -202,6 +202,14 @@ jobs:
                     {
                       "type": "mrkdwn",
                       "text": "*When*:\n$(date +'%m/%d/%Y %T')"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Build*:\n${CIRCLE_BUILD_NUM}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Author*:\n${CIRCLE_PROJECT_USERNAME}"
                     }
                   ]
                 },
