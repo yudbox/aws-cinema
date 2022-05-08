@@ -24,7 +24,7 @@
   "plugins": ["react"],
   "rules": {
     "semi": [2, "always"],
-    // "quotes": [2, "double"],
+    "quotes": [2, "double"],
     "space-before-function-paren": [
       0,
       { "anonymous": "always", "named": "always" }

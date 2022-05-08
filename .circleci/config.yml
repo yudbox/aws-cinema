@@ -1,3 +1,9 @@
+# https://circleci.com/docs/2.0/orb-intro/
+# https://circleci.com/developer/orbs/orb/circleci/slack
+# https://github.com/CircleCI-Public/slack-orb/wiki/Setup
+orbs:
+  slack: circleci/slack@4.9.5
+
 version: 2.1
 
 # executors это участки кода которые можно переиспользовать
@@ -15,6 +21,11 @@ executors:
       - image: cimg/node:16.15.0
       # указываю корневую папку где проект circleci будет развернут /home/circleci/repo/
     working_directory: ~/repo
+
+  slack-executor:
+    docker:
+      - image: cibuilds/base:latest
+    resource_class: small
 
 # aliases это участки кода которые можно положить в переменную
 # -
@@ -92,6 +103,17 @@ jobs:
           name: Run linting
           command: npm run lint
 
+  prettier:
+    #  использование экзекъютера
+    executor: docker-executor
+    steps:
+      - checkout
+      - *show-current-branch-name # вызов алиаса по имени
+      - *restore-cache # ниже не нужно созранять node_modules в кеш т.к. это сделано в джобсе build
+      - run:
+          name: Run prettier check
+          command: npm run prettier:check
+
   deploy-to-aws-s3:
     #  использование экзекъютера
     executor: docker-executor
@@ -142,6 +164,17 @@ jobs:
               aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID_DEV} --paths /\*
             fi
 
+  # https://circleci.com/developer/orbs/orb/circleci/slack
+  notify-via-slack:
+    #  использование экзекъютера
+    executor: slack-executor
+    steps:
+      - run: echo "Slack notification"
+      - slack/notify:
+          event: always
+          channel: cinema-circleci-slack-app # имя созданного канала в самом slack для моего проекта
+          template: success_tagged_deploy_1 #https://github.com/CircleCI-Public/slack-orb
+
   # workflows указывает порядок работы наших jobs описаных выше
   # срабатывают все сразу если не указать зависимости requires
   # начнется с build -> deploy-to-aws-s3 -> deploy-to-aws-cloudfront
@@ -160,9 +193,18 @@ workflows:
                 - develop
                 - staging
                 - master
+      - prettier:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - develop
+                - staging
+                - master
       - deploy-to-aws-s3:
           requires:
-            - linting
+            - prettier
           filters:
             branches:
               only:
