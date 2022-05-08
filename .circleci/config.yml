@@ -172,9 +172,9 @@ jobs:
       - run: echo "Slack notification"
       - slack/notify:
           event: "always"
-          channel: cinema-circleci-slack-app # имя созданного канала в самом slack для моего проекта
-         # template: success_tagged_deploy_1 #https://github.com/CircleCI-Public/slack-orb
-          template: '',
+          channel: "cinema-circleci-slack-app" # имя созданного канала в самом slack для моего проекта
+          # template: success_tagged_deploy_1 #https://github.com/CircleCI-Public/slack-orb
+          template: ""
           # https://api.slack.com/block-kit/interactivity // примеры кастомных сообщений
           # https://emojipedia.org/ здесь можно взять имоджи для сообщения
           custom: |
