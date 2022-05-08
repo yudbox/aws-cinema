@@ -190,12 +190,7 @@ jobs:
                 },
                 {
                   "type": "section",
-                  "fields": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Project*:\n${CIRCLE_PROJECT_REPONAME}"
-                    }
-                  ],
+                  "fields": []
                 },
                 {
                   "type": "actions",
