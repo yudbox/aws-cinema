@@ -194,11 +194,7 @@ jobs:
                     {
                       "type": "mrkdwn",
                       "text": "*Project*:\n${CIRCLE_PROJECT_REPONAME}"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Branch*:\n${CIRCLE_BRANCH}"
-                    },
+                    }
                   ],
                 },
                 {
