@@ -199,15 +199,6 @@ jobs:
                       "type": "mrkdwn",
                       "text": "*Branch*:\n${CIRCLE_BRANCH}"
                     },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Build*:\n${CIRCLE_BUILD_NUM}"
-                    }
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Author*:\n${CIRCLE_PROJECT_USERNAME}"
-                    }
                   ],
                 },
                 {
