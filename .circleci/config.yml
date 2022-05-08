@@ -173,7 +173,62 @@ jobs:
       - slack/notify:
           event: always
           channel: cinema-circleci-slack-app # имя созданного канала в самом slack для моего проекта
-          template: success_tagged_deploy_1 #https://github.com/CircleCI-Public/slack-orb
+         # template: success_tagged_deploy_1 #https://github.com/CircleCI-Public/slack-orb
+          template: '',
+          # https://api.slack.com/block-kit/interactivity // примеры кастомных сообщений
+          # https://emojipedia.org/ здесь можно взять имоджи для сообщения
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "${CIRCLE_BRANCH} deployment to AWS S3 and Cloudfront completed. 👍",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Project*:\n${CIRCLE_PROJECT_REPONAME}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Branch*:\n${CIRCLE_BRANCH}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*When*:\n${date +'%m/%d/%Y %T'}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Build*:\n${CIRCLE_BUILD_NUM}"
+                    }
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Author*:\n${CIRCLE_PROJECT_USERNAME}"
+                    }
+                  ],
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Job"
+                      },
+                      "url": "${CIRCLE_BUILD_URL}"
+                    }
+                  ]
+                }
+              ]
+            }
 
   # workflows указывает порядок работы наших jobs описаных выше
   # срабатывают все сразу если не указать зависимости requires
