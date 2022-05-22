@@ -97,13 +97,13 @@ jobs:
       - *restore-cache # вызов алиаса по имени
       - *install-dependencies # вызов алиаса по имени
       - *save-cache # вызов алиаса по имени
-      # - run:
-      #     name: Copy Infrastructure Folder
-      #     command: cp -r infrastructure artifacts/infrastructure
-      # - persist_to_workspace:
-      #     root: ./
-      #     paths:
-      #       - artifacts
+      - run:
+          name: Copy Infrastructure Folder
+          command: cp -r infrastructure artifacts/infrastructure
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - artifacts
 
   linting:
     #  использование экзекъютера
@@ -143,8 +143,8 @@ jobs:
             terraform init
             terraform validate
             terraform fmt -check
-
-  : #  использование экзекъютера
+  terraform-plan-and-apply:
+    #  использование экзекъютера
     executor: node-executor
     steps:
       - checkout
