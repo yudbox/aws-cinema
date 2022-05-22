@@ -6,30 +6,30 @@
 
 # acl описывает кто может обращаться к этому бакету Valid values are private, public-read, public-read-write, aws-exec-read, authenticated-read, and log-delivery-write
 resource "aws_s3_bucket" "cinema_app_s3_bucket" {
-  bucket        = local.prefix
+  bucket = local.prefix
   # acl           = "public-read"
   force_destroy = true
 
-#   # https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-bucket-policies.html#example-bucket-policies-use-case-2
-#   # добавляет в бакет в раздел Permissions -> Policy конфигурацию
-#   policy = <<EOF
-# {
-#     "Version": "2012-10-17",
-#     "Statement": [
-#         {
-#             "Sid": "PublicReadGetObject",
-#             "Effect": "Allow",
-#             "Principal": "*",
-#             "Action": [
-#                 "s3:GetObject"
-#             ],
-#             "Resource": [
-#                 "arn:aws:s3:::${local.prefix}/*"
-#             ]
-#         }
-#     ]
-# }
-#   EOF
+  #   # https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-bucket-policies.html#example-bucket-policies-use-case-2
+  #   # добавляет в бакет в раздел Permissions -> Policy конфигурацию
+  #   policy = <<EOF
+  # {
+  #     "Version": "2012-10-17",
+  #     "Statement": [
+  #         {
+  #             "Sid": "PublicReadGetObject",
+  #             "Effect": "Allow",
+  #             "Principal": "*",
+  #             "Action": [
+  #                 "s3:GetObject"
+  #             ],
+  #             "Resource": [
+  #                 "arn:aws:s3:::${local.prefix}/*"
+  #             ]
+  #         }
+  #     ]
+  # }
+  #   EOF
 
   # website {
   #   index_document = "index.html"
@@ -67,27 +67,28 @@ resource "aws_s3_bucket_website_configuration" "bucket_website_config" {
 
 resource "aws_s3_bucket_policy" "bucket_policy_config" {
   bucket = aws_s3_bucket.cinema_app_s3_bucket.id
+
   # https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-bucket-policies.html#example-bucket-policies-use-case-2
   # добавляет в бакет в раздел Permissions -> Policy конфигурацию
   policy = data.aws_iam_policy_document.allow_access_from_another_account.json
-#   policy = <<EOF
-# {
-#     "Version": "2012-10-17",
-#     "Statement": [
-#         {
-#             "Sid": "PublicReadGetObject",
-#             "Effect": "Allow",
-#             "Principal": "*",
-#             "Action": [
-#                 "s3:GetObject"
-#             ],
-#             "Resource": [
-#                 "arn:aws:s3:::${local.prefix}/*"
-#             ]
-#         }
-#     ]
-# }
-#   EOF
+  #   policy = <<EOF
+  # {
+  #     "Version": "2012-10-17",
+  #     "Statement": [
+  #         {
+  #             "Sid": "PublicReadGetObject",
+  #             "Effect": "Allow",
+  #             "Principal": "*",
+  #             "Action": [
+  #                 "s3:GetObject"
+  #             ],
+  #             "Resource": [
+  #                 "arn:aws:s3:::${local.prefix}/*"
+  #             ]
+  #         }
+  #     ]
+  # }
+  #   EOF
 
 }
 
@@ -96,8 +97,8 @@ data "aws_iam_policy_document" "allow_access_from_another_account" {
 
     sid = "PublicReadGetObject"
 
-    effect    = "Allow"
-    
+    effect = "Allow"
+
 
     actions = [
       "s3:GetObject"
