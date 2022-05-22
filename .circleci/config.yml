@@ -65,7 +65,9 @@ aliases:
   - &install-dependencies
     run:
       name: Insatll dependencies
-      command: npm install
+      command: |
+        mkdir -p artifacts
+        npm install
   - &install-aws-cli # запускаем команду установки awscli а затем python3-pip python-dev-is-python3 build-essential в корневую дерикторию "/"
     run:
       name: Installing AWS CLI
@@ -377,7 +379,7 @@ workflows:
                 - master
       - notify-via-slack:
           requires:
-            - build
+            - deploy-to-aws-cloudfront
           filters:
             branches:
               only:
