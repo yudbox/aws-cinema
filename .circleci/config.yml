@@ -31,7 +31,6 @@ executors:
     # https://hub.docker.com/r/hashicorp/terraform/tags
     docker:
       - image: hashicorp/terraform:1.2.0
-    resource_class: small
 
 # aliases это участки кода которые можно положить в переменную
 # -
@@ -118,7 +117,7 @@ jobs:
 
   prettier:
     #  использование экзекъютера
-    executor: terraform-executorr
+    executor: node-executor
     steps:
       - checkout
       - *show-current-branch-name # вызов алиаса по имени
@@ -129,12 +128,9 @@ jobs:
 
   terraform-validate:
     #  использование экзекъютера
-    executor: node-executor
+    executor: terraform-executor
     steps:
       - checkout
-      - attach_workspace:
-          # Must be absolute path or relative path from working_directory
-          at: ./
       - *show-current-branch-name # вызов алиаса по имени
       - run:
           name: Terraform validate & format
@@ -143,9 +139,10 @@ jobs:
             terraform init
             terraform validate
             terraform fmt -check
+
   terraform-plan-and-apply:
     #  использование экзекъютера
-    executor: node-executor
+    executor: terraform-executor
     steps:
       - checkout
       - attach_workspace:
@@ -153,20 +150,20 @@ jobs:
           at: ./
       - *show-current-branch-name # вызов алиаса по имени
       - run:
-          name: Teterraform-plan-and-applyrraform Plan
+          name: Teterraform-plan
           command: |
             cd artifacts/infrastructure/
             terraform init
             terraform workspace select ${CIRCLE_BRANCH} || terraform workspace new ${CIRCLE_BRANCH}
-            terraform plan --auto-approve
-            terraform output cinema_app_bucket_name > ../cinema_app_bucket_name.txt
-            terraform output cloudfront_distribution_yudbox_id > ../cloudfront_distribution_yudbox_id.txt
+            terraform plan
       - run:
           name: Terraform Apply
           command: |
             cd artifacts/infrastructure/
             terraform workspace select ${CIRCLE_BRANCH}
-            terraform apply
+            terraform apply --auto-approve
+            terraform output cinema_app_bucket_name > ../cinema_app_bucket_name.txt
+            terraform output cloudfront_distribution_yudbox_id > ../cloudfront_distribution_yudbox_id.txt
 
       # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
       - persist_to_workspace:
