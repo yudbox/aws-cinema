@@ -14,8 +14,6 @@
 
 provider "aws" {
   region     = "eu-central-1"
-  access_key = "AKIAXJKESN66OX6WJSN7"
-  secret_key = "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"
 }
 
 
@@ -32,8 +30,6 @@ terraform {
     key        = "app-cinema.tfstate"
     region     = "eu-central-1"
     encrypt    = true
-    access_key = "AKIAXJKESN66OX6WJSN7"
-    secret_key = "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"
 
   }
 }
@@ -55,3 +51,10 @@ locals {
     Owner       = "Yudbox"
   }
 }
+
+# -----for Linux
+# export AWS_ACCESS_KEY_ID=""
+# export AWS_SECRET_ACCESS_KEY=""
+# -----for windows
+# set AWS_ACCESS_KEY_ID=""
+# set AWS_SECRET_ACCESS_KEY=""
