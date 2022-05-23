@@ -140,7 +140,7 @@ jobs:
             cd infrastructure/
             terraform init
             terraform validate
-            terraform fmt -check
+            terraform fmt
 
   terraform-plan-and-apply:
     #  использование экзекъютера
