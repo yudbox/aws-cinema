@@ -138,7 +138,7 @@ jobs:
           name: Terraform validate & format
           command: |
             cd infrastructure/
-            terraform init
+            terraform init -backend-config="access_key=${AWS_ACCESS_KEY_ID}" -backend-config="secret_key=${AWS_SECRET_ACCESS_KEY}"
             terraform validate
             terraform fmt
 
@@ -155,7 +155,7 @@ jobs:
           name: Teterraform-plan
           command: |
             cd artifacts/infrastructure/
-            terraform init
+            terraform init -backend-config="access_key=${AWS_ACCESS_KEY_ID}" -backend-config="secret_key=${AWS_SECRET_ACCESS_KEY}"
             terraform workspace select ${CIRCLE_BRANCH} || terraform workspace new ${CIRCLE_BRANCH}
             terraform plan
       - run:
@@ -309,7 +309,7 @@ jobs:
           name: Terraform destroy
           command: |
             cd artifacts/infrastructure/
-            terraform init
+            terraform init -backend-config="access_key=${AWS_ACCESS_KEY_ID}" -backend-config="secret_key=${AWS_SECRET_ACCESS_KEY}"
             terraform workspace select ${CIRCLE_BRANCH} || terraform workspace new ${CIRCLE_BRANCH} 
             terraform destroy --auto-approve
 

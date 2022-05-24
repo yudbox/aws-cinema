@@ -30,7 +30,6 @@ terraform {
     key        = "app-cinema.tfstate"
     region     = "eu-central-1"
     encrypt    = true
-
   }
 }
 
@@ -58,3 +57,5 @@ locals {
 # -----for windows
 # set AWS_ACCESS_KEY_ID=""
 # set AWS_SECRET_ACCESS_KEY=""
+
+
