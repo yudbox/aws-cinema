@@ -162,6 +162,7 @@ jobs:
           name: Show the directories
           command: |
             cd ~
+            cd project
             ls -la
       - run:
           name: Terraform Apply
