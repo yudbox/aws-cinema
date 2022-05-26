@@ -159,7 +159,7 @@ jobs:
             terraform workspace select ${CIRCLE_BRANCH} || terraform workspace new ${CIRCLE_BRANCH}
             terraform plan
       - run:
-          name: Show the directories
+          name: Show the directoriess
           command: |
             cd ~
             cd project
