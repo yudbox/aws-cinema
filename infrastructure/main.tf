@@ -14,7 +14,7 @@
 # https://www.terraform.io/language/providers/configuration
 
 provider "aws" {
-  region     = "eu-central-1"
+  region = "eu-central-1"
 }
 
 
@@ -27,10 +27,10 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket     = "cinema-tf-state-bucket"
-    key        = "app-cinema.tfstate"
-    region     = "eu-central-1"
-    encrypt    = true
+    bucket  = "cinema-tf-state-bucket"
+    key     = "app-cinema.tfstate"
+    region  = "eu-central-1"
+    encrypt = true
   }
 }
 
