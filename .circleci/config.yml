@@ -139,8 +139,8 @@ jobs:
           command: |
             cd infrastructure/
             terraform init
-            terraform validate
             terraform fmt
+            terraform validate
 
   terraform-plan-and-apply:
     #  использование экзекъютера
