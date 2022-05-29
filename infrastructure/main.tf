@@ -31,10 +31,6 @@ terraform {
     key        = "app-cinema.tfstate"
     region     = "eu-central-1"
     encrypt    = true
-<<<<<<< HEAD
-
-=======
->>>>>>> develop
   }
 }
 
