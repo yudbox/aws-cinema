@@ -60,12 +60,7 @@ locals {
 # export AWS_ACCESS_KEY_ID=""
 # export AWS_SECRET_ACCESS_KEY=""
 # -----for windows
-<<<<<<< HEAD
-# set AWS_ACCESS_KEY_ID=""
-# set AWS_SECRET_ACCESS_KEY=""
-=======
 # $env:AWS_ACCESS_KEY_ID=""
 # $env:AWS_SECRET_ACCESS_KEY=""
 
 
->>>>>>> develop
