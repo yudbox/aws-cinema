@@ -16,13 +16,13 @@ const HEADER_CATEGORIES = [
     type: "popular"
   },
   {
-    id: 1,
+    id: 3,
     iconClass: "fas fa-star",
     name: "Top Rated",
     type: "top_rated"
   },
   {
-    id: 1,
+    id: 4,
     iconClass: "fas fa-plus-square",
     name: "Upcoming",
     type: "upcoming"
