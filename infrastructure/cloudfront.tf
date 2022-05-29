@@ -5,6 +5,10 @@
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution#example-usage
 # добавляем новый ресурс
 
+resource "aws_s3_bucket_acl" "s3_cinema_app_acl" {
+  bucket = aws_s3_bucket.cinema_app_s3_bucket.id
+  acl    = "public-read"
+}
 
 
 resource "aws_cloudfront_distribution" "s3_cinema_app_distribution" {

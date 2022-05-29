@@ -4,10 +4,12 @@ import Header from "./components/Header/Header";
 
 const App = () => {
   return (
-    <div className="app">
+    <>
       <Header />
-      <h1>React Redux</h1>
-    </div>
+      <div className="app">
+        <h1>React Redux</h1>
+      </div>
+    </>
   );
 };
 

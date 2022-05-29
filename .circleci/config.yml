@@ -159,6 +159,11 @@ jobs:
             terraform workspace select ${CIRCLE_BRANCH} || terraform workspace new ${CIRCLE_BRANCH}
             terraform plan
       - run:
+          name: Show the directories
+          command: |
+            cd 
+            ls -la
+      - run:
           name: Terraform Apply
           command: |
             cd artifacts/infrastructure/
