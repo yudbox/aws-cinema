@@ -1,17 +1,33 @@
 import React, { useState } from "react";
+import Grid from "../grid/Grid";
 import Paginate from "../paginate/Paginate";
 import SlideShow from "../slide-show/SlideShow";
 import "./MainContent.scss";
 
 const images = [
   {
-    url: "https://images.pexels.com/photos/15286/pexels-photo.jpg"
+    url: "https://images.pexels.com/photos/15286/pexels-photo.jpg",
+    raiting: 7.5
   },
   {
-    url: "https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    url: "https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    raiting: 8.5
   },
   {
-    url: "https://images.pexels.com/photos/15286/pexels-photo.jpg"
+    url: "https://images.pexels.com/photos/15286/pexels-photo.jpg",
+    raiting: 7.8
+  },
+  {
+    url: "https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    raiting: 9.7
+  },
+  {
+    url: "https://images.pexels.com/photos/15286/pexels-photo.jpg",
+    raiting: 6.5
+  },
+  {
+    url: "https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    raiting: 8.5
   }
 ];
 
@@ -34,6 +50,7 @@ const MainContent = () => {
           <Paginate currentPage={currentPage} totalPages={10} paginate={paginate} />
         </div>
       </div>
+      <Grid images={images} />
     </div>
   );
 };
