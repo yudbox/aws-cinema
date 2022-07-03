@@ -1,7 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { IMAGE_URL } from "../../../services/movies.service";
-// import PropTypes from "prop-types";
 import Raiting from "../raiting/Raiting";
 import { v4 as uuidv4 } from "uuid";
 import "./Grid.scss";
@@ -46,5 +45,3 @@ const Grid = () => {
 };
 
 export default Grid;
-
-// Grid.propTypes = {};
