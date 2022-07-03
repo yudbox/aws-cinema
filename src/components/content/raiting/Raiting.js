@@ -25,15 +25,24 @@ const Raiting = ({ raiting, totalStars }) => {
         {numberOfStars &&
           numberOfStars.map((i) => (
             <Fragment key={i}>
-              <i className="fa fa-star" aria-hidden="true"></i>
+              <i
+                className="fa fa-star"
+                aria-hidden="true"
+              ></i>
             </Fragment>
           ))}
 
-        <div className="front-stars" ref={raitingRef}>
+        <div
+          className="front-stars"
+          ref={raitingRef}
+        >
           {numberOfStars &&
             numberOfStars.map((i) => (
               <Fragment key={i}>
-                <i className="fa fa-star" aria-hidden="true"></i>
+                <i
+                  className="fa fa-star"
+                  aria-hidden="true"
+                ></i>
               </Fragment>
             ))}
         </div>
