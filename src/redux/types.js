@@ -1,0 +1,5 @@
+export const GET_MOVIES_LIST = "GET_MOVIES_LIST";
+export const SET_ERROR = "SET_ERROR";
+export const SET_IS_FETCHING = "SET_IS_FETCHING";
+export const LOAD_MORE_MOVIES = "LOAD_MORE_MOVIES";
+export const SET_MOVIE_CATEGORY = "SET_MOVIE_CATEGORY";

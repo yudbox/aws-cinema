@@ -1,12 +1,17 @@
+// https://developers.themoviedb.org/3/movies/get-movie-details
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import "./SlideShow.scss";
 import * as constants from "../../../constants";
+import { useSelector } from "react-redux";
+import { IMAGE_URL } from "../../../services/movies.service";
 
 const SlideShow = (props) => {
-  const { images, auto, showArrows } = props;
+  const { auto, showArrows } = props;
+
+  const images = useSelector((state) => state.movies.list);
   const [state, setState] = useState({
-    slideShow: images[0],
+    slideShow: "",
     slideIndex: 0
   });
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -14,6 +19,10 @@ const SlideShow = (props) => {
   let currentSlideIndex = 0;
 
   useEffect(() => {
+    setState((state) => ({
+      ...state,
+      slideShow: images[state.slideIndex] ? images[state.slideIndex] : ""
+    }));
     let timerId;
     if (auto) {
       timerId = setInterval(autoMoveSlide, 5000);
@@ -21,7 +30,7 @@ const SlideShow = (props) => {
     return () => {
       clearInterval(timerId);
     };
-  }, []);
+  }, [images]);
 
   const autoMoveSlide = () => {
     const lastIndex = currentSlideIndex + 1;
@@ -36,7 +45,12 @@ const SlideShow = (props) => {
   const Indicators = ({ currentSlide }) => {
     const listIndicators = images.map((slide, index) => {
       const btnClasses = index === currentSlide ? "slider-navButton slider-navButton--active" : "slider-navButton";
-      return <button className={btnClasses} key={index} />;
+      return (
+        <button
+          className={btnClasses}
+          key={index}
+        />
+      );
     });
     return <div className="slider-nav">{listIndicators}</div>;
   };
@@ -44,8 +58,14 @@ const SlideShow = (props) => {
   const RenderArrows = () => {
     return (
       <div className="slider-arrows">
-        <div className="slider-arrow slider-arrow--left" onClick={() => moveSlideWithArrowa(constants.PREV)} />
-        <div className="slider-arrow slider-arrow--right" onClick={() => moveSlideWithArrowa(constants.NEXT)} />
+        <div
+          className="slider-arrow slider-arrow--left"
+          onClick={() => moveSlideWithArrowa(constants.PREV)}
+        />
+        <div
+          className="slider-arrow slider-arrow--right"
+          onClick={() => moveSlideWithArrowa(constants.NEXT)}
+        />
       </div>
     );
   };
@@ -82,7 +102,7 @@ const SlideShow = (props) => {
             <div
               className="slider-image"
               style={{
-                backgroundImage: `url(${slideShow.url})`
+                backgroundImage: `url(${IMAGE_URL}${slideShow.backdrop_path ? slideShow.backdrop_path : ""})`
               }}
             ></div>
           )}
@@ -96,12 +116,7 @@ const SlideShow = (props) => {
 
 export default SlideShow;
 
-// Indicators.propTypes = {
-//   currentSlide: PropTypes.number
-// };
-
 SlideShow.propTypes = {
-  images: PropTypes.array.isRequired,
   auto: PropTypes.bool.isRequired,
   showArrows: PropTypes.bool.isRequired,
   currentSlide: PropTypes.number

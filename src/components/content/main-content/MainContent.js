@@ -1,56 +1,52 @@
-import React, { useState } from "react";
+import React from "react";
+
 import Grid from "../grid/Grid";
 import Paginate from "../paginate/Paginate";
 import SlideShow from "../slide-show/SlideShow";
 import "./MainContent.scss";
+import { useDispatch, useSelector } from "react-redux";
+import { getMovies } from "../../../redux/actions/movies-action";
 
-const images = [
-  {
-    url: "https://images.pexels.com/photos/15286/pexels-photo.jpg",
-    raiting: 7.5
-  },
-  {
-    url: "https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    raiting: 8.5
-  },
-  {
-    url: "https://images.pexels.com/photos/15286/pexels-photo.jpg",
-    raiting: 7.8
-  },
-  {
-    url: "https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    raiting: 9.7
-  },
-  {
-    url: "https://images.pexels.com/photos/15286/pexels-photo.jpg",
-    raiting: 6.5
-  },
-  {
-    url: "https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    raiting: 8.5
-  }
-];
+const MOVIE_TYPE = {
+  now_playing: "Now Playing",
+  popular: "Popular",
+  top_rated: "Top Rated",
+  upcoming: "Upcoming"
+};
 
 const MainContent = () => {
-  const [currentPage, setCurrentPage] = useState(1);
+  const movieCategory = useSelector((state) => state.movies.movieCategory);
+  const totalPages = useSelector((state) => state.movies.totalPages);
+  const page = useSelector((state) => state.movies.page);
+
+  const dispatch = useDispatch();
 
   const paginate = (type) => {
-    if (type === "prev" && currentPage > 1) {
-      setCurrentPage((prev) => prev - 1);
+    let pageNumber = page;
+    if (type === "prev" && page >= 1) {
+      pageNumber -= 1;
     } else {
-      setCurrentPage((prev) => prev + 1);
+      pageNumber += 1;
     }
+    dispatch(getMovies(movieCategory, pageNumber));
   };
   return (
     <div className="main-content">
-      <SlideShow images={images} auto={false} showArrows={true} />
+      <SlideShow
+        auto={true}
+        showArrows={true}
+      />
       <div className="grid-movie-title">
-        <div className="movie-type">Now playing</div>
+        <div className="movie-type">{MOVIE_TYPE[movieCategory]}</div>
         <div className="paginate">
-          <Paginate currentPage={currentPage} totalPages={10} paginate={paginate} />
+          <Paginate
+            currentPage={page}
+            totalPages={totalPages}
+            paginate={paginate}
+          />
         </div>
       </div>
-      <Grid images={images} />
+      <Grid />
     </div>
   );
 };
