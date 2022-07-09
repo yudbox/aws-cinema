@@ -14,4 +14,7 @@ export const SEARCH_API_URL = async (query) => {
   return await axios.get(`${REQUEST_URL}/search/movie?api_key=${API_KEY}&language=en-US&query=${query}`);
 };
 
-// https://api.themoviedb.org/3/search/movie?api_key=47841e309797869bffa428d5056da49e&language=en-US&query="ava"
+// https://developers.themoviedb.org/3/movies/get-movie-details
+export const GET_MOVIE_DETAILS_API_URL = async (movieId) => {
+  return await axios.get(`${REQUEST_URL}/movie/${movieId}?api_key=${API_KEY}&language=en-US`);
+};
