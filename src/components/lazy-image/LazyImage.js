@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
+
 import placeholderImg from "../../assets/lazy_loader.gif";
+import Raiting from "../content/raiting/Raiting";
+import { formatMovieTitle } from "../../helpers";
+import "./LazyImage.scss";
 
 export const LazyImage = (props) => {
-  const { src, alt, children, className } = props;
+  const { src, alt, data, className } = props;
   const [imgSrc, setImgSrc] = useState(placeholderImg);
   const [imgRef, setImgRef] = useState();
 
@@ -64,7 +69,22 @@ export const LazyImage = (props) => {
         style={{ backgroundImage: `url(${imgSrc})` }}
         alt={alt}
       >
-        {children}
+        <div className="grid-read-more">
+          <button className="grid-cell-button">
+            <Link to={`${data.id}/${formatMovieTitle(data.title)}/details`}>Read more</Link>
+          </button>
+        </div>
+        <div className="grid-detail">
+          <span className="grid-detail-title">{data.title && data.title}</span>
+          <div className="grid-detail-raiting">
+            <Raiting
+              raiting={data.vote_average && data.vote_average}
+              totalStars={5}
+            />
+            {/* &nbsp;&nbsp; */}
+            <div className="grid-vote-average">{data.vote_average && data.vote_average}</div>
+          </div>
+        </div>
       </div>
     </>
   );
@@ -73,6 +93,6 @@ export const LazyImage = (props) => {
 LazyImage.propTypes = {
   src: PropTypes.string,
   alt: PropTypes.string,
-  children: PropTypes.node,
+  data: PropTypes.object.isRequired,
   className: PropTypes.string
 };

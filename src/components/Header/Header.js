@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import logo from "../../assets/header/cinema-logo.svg";
-import { getMovies, setMovieCategory } from "../../redux/actions/movies-action";
+import { getMovies, setMovieCategory, setSearchQuery } from "../../redux/actions/movies-action";
 import * as constants from "../../constants";
 import "./Header.scss";
 
@@ -39,6 +40,9 @@ const Header = () => {
 
   const dispatch = useDispatch();
   const category = useSelector((state) => state.movies.movieCategory);
+  const searchQueryString = useSelector((state) => state.movies.searchQuery);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getMovies(category, 1));
@@ -53,12 +57,23 @@ const Header = () => {
     dispatch(setMovieCategory(catecory));
   };
 
+  const handleSearch = (event) => {
+    dispatch(setSearchQuery(event.target.value));
+  };
+
+  const navigateToHomePage = () => {
+    navigate("/");
+  };
+
   return (
     <>
       <div className="header-nav-wrapper">
         <div className="header-bar"></div>
         <div className="header-navbar">
-          <div className="header-image">
+          <div
+            className="header-image"
+            onClick={navigateToHomePage}
+          >
             <img
               src={logo}
               alt="logo"
@@ -92,6 +107,8 @@ const Header = () => {
               className="search-input"
               type="text"
               placeholder="Search for a movie"
+              value={searchQueryString}
+              onChange={handleSearch}
             />
           </ul>
         </div>
