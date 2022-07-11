@@ -17,7 +17,7 @@ const App = () => {
           />
           <Route
             exact
-            path="/:id/:name/details"
+            path="/:movieId/:name/details"
             element={<Details />}
           />
         </Routes>

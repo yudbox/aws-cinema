@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import logo from "../../assets/header/cinema-logo.svg";
 import { getMovies, setMovieCategory, setSearchQuery } from "../../redux/actions/movies-action";
@@ -43,6 +43,7 @@ const Header = () => {
   const searchQueryString = useSelector((state) => state.movies.searchQuery);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     dispatch(getMovies(category, 1));
@@ -55,6 +56,7 @@ const Header = () => {
 
   const handleMovieCategory = (catecory) => {
     dispatch(setMovieCategory(catecory));
+    navigate("/");
   };
 
   const handleSearch = (event) => {
@@ -102,14 +104,15 @@ const Header = () => {
                 <span className="header-list-name">{cat.name}</span>
               </li>
             ))}
-            <li className="header-nav-item">New Movies</li>
-            <input
-              className="search-input"
-              type="text"
-              placeholder="Search for a movie"
-              value={searchQueryString}
-              onChange={handleSearch}
-            />
+            {location.pathname === "/" && (
+              <input
+                className="search-input"
+                type="text"
+                placeholder="Search for a movie"
+                value={searchQueryString}
+                onChange={handleSearch}
+              />
+            )}
           </ul>
         </div>
       </div>

@@ -1,46 +1,53 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
+
+import * as constants from "../../../../constants";
+import { IMAGE_URL } from "../../../../services/movies.service";
+import noImage from "../../../../assets/no_image_avatar.jpg";
 
 import "./Overview.scss";
 
 const Overview = () => {
   const [items, setItems] = useState([]);
+  const movieDetails = useSelector((state) => state.movies.movieDetails);
 
   useEffect(() => {
+    const budget = movieDetails[constants.MOVIE_DETAIL_TABS.details]?.budget;
+    const revenue = movieDetails[constants.MOVIE_DETAIL_TABS.details]?.revenue;
     const detailItems = [
       {
         id: 0,
         name: "Tagline",
-        value: "Part of the journey is the end"
+        value: movieDetails[constants.MOVIE_DETAIL_TABS.details]?.tagline
       },
       {
         id: 1,
         name: "Budget",
-        value: `${numberFormatter(356000000, 1)}`
+        value: budget ? `${numberFormatter(budget, 1)}` : "N/A"
       },
       {
         id: 2,
         name: "Revenue",
-        value: `${numberFormatter(2800000000, 1)}`
+        value: revenue ? `${numberFormatter(revenue, 1)}` : "N/A"
       },
       {
         id: 3,
         name: "Status",
-        value: "Released"
+        value: movieDetails[constants.MOVIE_DETAIL_TABS.details]?.status
       },
       {
         id: 4,
         name: "Release Date",
-        value: "2019-04-24"
+        value: movieDetails[constants.MOVIE_DETAIL_TABS.details]?.release_date
       },
       {
         id: 5,
         name: "Run Time",
-        value: "181 min"
+        value: `${movieDetails[constants.MOVIE_DETAIL_TABS.details]?.runtime} min`
       }
     ];
     setItems(detailItems);
-
-    // eslint-disable-next-line
   }, []);
 
   const numberFormatter = (number, digits) => {
@@ -56,31 +63,40 @@ const Overview = () => {
     for (let i = 0; i < symbolArray.length; i++) {
       if (number >= symbolArray[i].value) {
         result = (number / symbolArray[i].value).toFixed(digits).replace(regex, "$1") + symbolArray[i].symbol;
-        console.log("result", result);
       }
     }
     return result;
   };
 
+  const prodCompanies = movieDetails[constants.MOVIE_DETAIL_TABS.details]?.production_companies;
+  const cast = movieDetails[constants.MOVIE_DETAIL_TABS.credits]?.cast;
+  const languages = movieDetails[constants.MOVIE_DETAIL_TABS.details]?.spoken_languages;
+
   return (
     <div className="overview">
       <div className="overview-column-1">
-        <div className="description">This is a description about the movie</div>
+        <div className="description">{movieDetails[constants.MOVIE_DETAIL_TABS.details]?.overview}</div>
 
         <div className="cast">
           <div className="div-title">Cast</div>
           <table>
             <tbody>
-              <tr>
-                <td>
-                  <img
-                    src="http://placehold.it/54x81"
-                    alt=""
-                  />
-                </td>
-                <td>Robert Downing Jr.</td>
-                <td>Iron Man</td>
-              </tr>
+              {Array.isArray(cast) &&
+                cast.length &&
+                cast.map((actor) => {
+                  return (
+                    <tr key={uuidv4()}>
+                      <td>
+                        <img
+                          src={actor.profile_path ? `${IMAGE_URL}${actor.profile_path}` : noImage}
+                          alt={actor.name}
+                        />
+                      </td>
+                      <td>{actor.name}</td>
+                      <td>{actor.character}</td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         </div>
@@ -88,19 +104,30 @@ const Overview = () => {
       <div className="overview-column-2">
         <div className="overview-detail">
           <h6>Production Companies</h6>
-          <div className="product-company">
-            <img
-              src="http://placehold.it/30x30"
-              alt=""
-            />
-            <span>Marvel</span>
-          </div>
+          {Array.isArray(prodCompanies) &&
+            prodCompanies.length &&
+            prodCompanies.map((company) => (
+              <div
+                key={uuidv4()}
+                className="product-company"
+              >
+                <img
+                  src={company.logo_path ? `${IMAGE_URL}${company.logo_path}` : noImage}
+                  alt={company.name}
+                />
+                <span>{company.name}</span>
+              </div>
+            ))}
         </div>
         <div className="overview-detail">
           <h6>Language(s)</h6>
-          <p>
-            <a href="!#">English</a>
-          </p>
+          {Array.isArray(languages) &&
+            languages.length &&
+            languages.map((language) => (
+              <p key={language.english_name}>
+                <a href="!#">{language.english_name}</a>
+              </p>
+            ))}
         </div>
         {items.map((data) => (
           <div

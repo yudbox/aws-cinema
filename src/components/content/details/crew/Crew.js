@@ -1,8 +1,15 @@
 import React from "react";
+import { useSelector } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
 
+import { IMAGE_URL } from "../../../../services/movies.service";
+import noImage from "../../../../assets/no_image_avatar.jpg";
+import * as constants from "../../../../constants";
 import "./Crew.scss";
 
 const Crew = () => {
+  const movieDetails = useSelector((state) => state.movies.movieDetails);
+  const crew = movieDetails[constants.MOVIE_DETAIL_TABS.credits]?.crew;
   return (
     <>
       <div className="cast">
@@ -17,17 +24,21 @@ const Crew = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>
-                <img
-                  src="http://placehold.it/54x81"
-                  alt=""
-                />
-              </td>
-              <td>Alan Silvestri</td>
-              <td>Sound</td>
-              <td>Original Music Composer</td>
-            </tr>
+            {Array.isArray(crew) &&
+              crew.length &&
+              crew.map((crewPerson) => (
+                <tr key={uuidv4()}>
+                  <td>
+                    <img
+                      src={crewPerson.profile_path ? `${IMAGE_URL}${crewPerson.profile_path}` : noImage}
+                      alt={crewPerson.name}
+                    />
+                  </td>
+                  <td>{crewPerson.name}</td>
+                  <td>{crewPerson.department}</td>
+                  <td>{crewPerson.job}</td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
