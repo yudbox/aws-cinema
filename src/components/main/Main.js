@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import "./Main.scss";
 import MainContent from "../content/main-content/MainContent";
 import { loadMoreMovies } from "../../redux/actions/movies-action";
+import SearchResult from "../search-result/SearchResult";
 // import Spinner from "../spinner/Spinner";
 
 const Main = () => {
@@ -11,6 +12,7 @@ const Main = () => {
   const page = useSelector((state) => state.movies.page);
   const totalPages = useSelector((state) => state.movies.totalPages);
   const category = useSelector((state) => state.movies.movieCategory);
+  const searchResultData = useSelector((state) => state.movies.searchResult);
 
   const dispatch = useDispatch();
 
@@ -39,7 +41,7 @@ const Main = () => {
       ref={mainRef}
       onScroll={() => handleScroll()}
     >
-      <MainContent />
+      {searchResultData && searchResultData.length ? <SearchResult /> : <MainContent />}
       <div ref={bottomLineRef}></div>
     </div>
   );
