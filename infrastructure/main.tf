@@ -18,7 +18,6 @@ provider "aws" {
 }
 
 
-
 # https://www.terraform.io/language/settings/backends/s3
 # backend определяет где terraform снимки(данные) будут хранится. В данном случае на s3 bucket
 # cinema-tf-state-bucket имя с AWS сервиса созданного через сайт aws
