@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useMatch } from "react-router-dom";
 
 import logo from "../../assets/header/cinema-logo.svg";
 import { getMovies, setMovieCategory, setSearchQuery } from "../../redux/actions/movies-action";
@@ -44,6 +44,10 @@ const Header = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const detailsRoute = useMatch("/:movieId/:name/details");
+
+  console.log("detailsRoute", detailsRoute);
+  console.log("location.pathname", location.pathname);
 
   useEffect(() => {
     dispatch(getMovies(category, 1));
@@ -66,7 +70,7 @@ const Header = () => {
   const navigateToHomePage = () => {
     navigate("/");
   };
-
+  if (!detailsRoute && location.pathname !== "/") return null;
   return (
     <>
       <div className="header-nav-wrapper">
