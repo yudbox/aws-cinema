@@ -193,24 +193,31 @@ jobs:
           at: ./
       - *show-current-branch-name # вызов алиаса по имени
       - *install-aws-cli # вызов алиаса по имени
-      - *build-react-project # вызов алиаса по имени
       - run:
-          # в зависимости от имени ветки запускаем команду для деплоя сбилженого проекта на AWS сервис S3 bucket
-          name: Deploy to AWS S3
-          command: |
-            echo "start deploing ----->"
-            echo "CIRCLE_BRANCH  === ${CIRCLE_BRANCH}"
-            AWS_BUCKET_NAME=$(cat artifacts/cinema_app_bucket_name.txt | sed 's/\"//g')
-            echo "BUCKET_NAME----> = ${AWS_BUCKET_NAME}"
-            if [ "${CIRCLE_BRANCH}" == "master" ]
-            then
-              aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME} --delete
-            elif [ "${CIRCLE_BRANCH}" == "staging" ]
-            then
-              aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME} --delete
-            else
-              aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME} --delete
-            fi
+        command: |
+          echo "ls"
+          ls -la
+          npm install
+          npm run build
+
+      # - *build-react-project # вызов алиаса по имени
+      # - run:
+      #     # в зависимости от имени ветки запускаем команду для деплоя сбилженого проекта на AWS сервис S3 bucket
+      #     name: Deploy to AWS S3
+      #     command: |
+      #       echo "start deploing ----->"
+      #       echo "CIRCLE_BRANCH  === ${CIRCLE_BRANCH}"
+      #       AWS_BUCKET_NAME=$(cat artifacts/cinema_app_bucket_name.txt | sed 's/\"//g')
+      #       echo "BUCKET_NAME----> = ${AWS_BUCKET_NAME}"
+      #       if [ "${CIRCLE_BRANCH}" == "master" ]
+      #       then
+      #         aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME} --delete
+      #       elif [ "${CIRCLE_BRANCH}" == "staging" ]
+      #       then
+      #         aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME} --delete
+      #       else
+      #         aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME} --delete
+      #       fi
 
   deploy-to-aws-cloudfront:
     #  использование экзекъютера
@@ -221,33 +228,28 @@ jobs:
           at: ./
       - *show-current-branch-name # вызов алиаса по имени
       - *install-aws-cli # вызов алиаса по имени
+      - *build-react-project # вызов алиаса по имени
       - run:
-        command: |
-          echo "ls -la"
-          ls -la
-
-      # - *build-react-project # вызов алиаса по имени
-      # - run:
-      #     # в зависимости от имени ветки запускаем команду для перезапуска кеширования на облаке
-      #     # cloudfront это сервис который позволяет кешировать сайты или чаще всего статические картинки которые редко меняются для первой загрузки с сервера
-      #     # это нужно для того чтоб в удаленных уголках мира загрузка сайта происходила быстрее, если у нас сервер находится во Франкфурте а пользовотель
-      #     # заходит на сайт где-то в индонезии то AWS кеширует наш сайт или статику в разных уголках мира (где есть Edge Location) и загрузка происходит быстрее
-      #     # СDN (Cloud Delivery Network) это сеть Edge Location которые хранят кеш сайтов
-      #     # в AWS кеш по умолчанию хранится 24 часа в данной команде мы сбрасываем кеш (создаем инвалидацию) create-invalidation котороая обновит кеш загруженный в S3 bucket
-      #     name: Deploy to AWS Cloudfront
-      #     command: |
-      #       AWS_CLOUDFRONT_DISTRIBUTION_ID=$(cat artifacts/cloudfront_distribution_yudbox_id.txt | sed 's/\"//g')
-      #       echo "BUCKET_NAME----> = ${AWS_BUCKET_NAME}"
-      #       aws configure set preview.cloudfront true
-      #       if [ "${CIRCLE_BRANCH}" == "master" ]
-      #       then
-      #         aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID} --paths /\*
-      #       elif [ "${CIRCLE_BRANCH}" == "staging" ]
-      #       then
-      #         aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID} --paths /\*
-      #       else
-      #         aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID} --paths /\*
-      #       fi
+          # в зависимости от имени ветки запускаем команду для перезапуска кеширования на облаке
+          # cloudfront это сервис который позволяет кешировать сайты или чаще всего статические картинки которые редко меняются для первой загрузки с сервера
+          # это нужно для того чтоб в удаленных уголках мира загрузка сайта происходила быстрее, если у нас сервер находится во Франкфурте а пользовотель
+          # заходит на сайт где-то в индонезии то AWS кеширует наш сайт или статику в разных уголках мира (где есть Edge Location) и загрузка происходит быстрее
+          # СDN (Cloud Delivery Network) это сеть Edge Location которые хранят кеш сайтов
+          # в AWS кеш по умолчанию хранится 24 часа в данной команде мы сбрасываем кеш (создаем инвалидацию) create-invalidation котороая обновит кеш загруженный в S3 bucket
+          name: Deploy to AWS Cloudfront
+          command: |
+            AWS_CLOUDFRONT_DISTRIBUTION_ID=$(cat artifacts/cloudfront_distribution_yudbox_id.txt | sed 's/\"//g')
+            echo "BUCKET_NAME----> = ${AWS_BUCKET_NAME}"
+            aws configure set preview.cloudfront true
+            if [ "${CIRCLE_BRANCH}" == "master" ]
+            then
+              aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID} --paths /\*
+            elif [ "${CIRCLE_BRANCH}" == "staging" ]
+            then
+              aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID} --paths /\*
+            else
+              aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID} --paths /\*
+            fi
 
   # https://circleci.com/developer/orbs/orb/circleci/slack
   notify-via-slack:
