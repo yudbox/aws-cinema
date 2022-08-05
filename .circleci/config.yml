@@ -201,7 +201,6 @@ jobs:
             cd ./components
             echo "components"
             ls -la
-
             cd ../
             npm install
             npm run build
