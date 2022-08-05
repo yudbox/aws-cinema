@@ -201,10 +201,8 @@ jobs:
             cd ./components
             echo "components"
             ls -la
-            cd ./header
-            echo "header"
-            ls -la
-            cd ../../
+
+            cd ../
             npm install
             npm run build
 
