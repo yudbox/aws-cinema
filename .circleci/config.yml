@@ -195,8 +195,16 @@ jobs:
       - *install-aws-cli # вызов алиаса по имени
       - run:
           command: |
-            echo "ls"
+            cd ./src
+            echo "src"
             ls -la
+            cd ./components
+            echo "components"
+            ls -la
+            cd ./header
+            echo "header"
+            ls -la
+            cd ../../
             npm install
             npm run build
 
