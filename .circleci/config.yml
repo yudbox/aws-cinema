@@ -201,28 +201,28 @@ jobs:
             cd ./components
             echo "components"
             ls -la
-            cd ../
-            npm install
-            npm run build
-
-      # - *build-react-project # вызов алиаса по имени
-      # - run:
-      #     # в зависимости от имени ветки запускаем команду для деплоя сбилженого проекта на AWS сервис S3 bucket
-      #     name: Deploy to AWS S3
-      #     command: |
-      #       echo "start deploing ----->"
-      #       echo "CIRCLE_BRANCH  === ${CIRCLE_BRANCH}"
-      #       AWS_BUCKET_NAME=$(cat artifacts/cinema_app_bucket_name.txt | sed 's/\"//g')
-      #       echo "BUCKET_NAME----> = ${AWS_BUCKET_NAME}"
-      #       if [ "${CIRCLE_BRANCH}" == "master" ]
-      #       then
-      #         aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME} --delete
-      #       elif [ "${CIRCLE_BRANCH}" == "staging" ]
-      #       then
-      #         aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME} --delete
-      #       else
-      #         aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME} --delete
-      #       fi
+            cd ./cd ./components
+            echo "topHeader"
+            ls -la
+            cd ../../5
+      - *build-react-project # вызов алиаса по имени
+      - run:
+          # в зависимости от имени ветки запускаем команду для деплоя сбилженого проекта на AWS сервис S3 bucket
+          name: Deploy to AWS S3
+          command: |
+            echo "start deploing ----->"
+            echo "CIRCLE_BRANCH  === ${CIRCLE_BRANCH}"
+            AWS_BUCKET_NAME=$(cat artifacts/cinema_app_bucket_name.txt | sed 's/\"//g')
+            echo "BUCKET_NAME----> = ${AWS_BUCKET_NAME}"
+            if [ "${CIRCLE_BRANCH}" == "master" ]
+            then
+              aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME} --delete
+            elif [ "${CIRCLE_BRANCH}" == "staging" ]
+            then
+              aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME} --delete
+            else
+              aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME} --delete
+            fi
 
   deploy-to-aws-cloudfront:
     #  использование экзекъютера
