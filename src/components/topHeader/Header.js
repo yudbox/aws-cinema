@@ -112,7 +112,7 @@ const Header = () => {
               <input
                 className="search-input"
                 type="text"
-                placeholder="Search for a movie"
+                placeholder="Search for a moviee"
                 value={searchQueryString}
                 onChange={handleSearch}
               />
