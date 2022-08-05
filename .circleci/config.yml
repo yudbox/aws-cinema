@@ -199,10 +199,10 @@ jobs:
             echo "src"
             ls -la
             cd ./components
-             echo "components"
+            echo "components"
             ls -la
             cd ./header
-              echo "header"
+            echo "header"
             ls -la
             cd ../../
             npm install
