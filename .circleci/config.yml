@@ -194,11 +194,11 @@ jobs:
       - *show-current-branch-name # вызов алиаса по имени
       - *install-aws-cli # вызов алиаса по имени
       - run:
-        command: |
-          echo "ls"
-          ls -la
-          npm install
-          npm run build
+          command: |
+            echo "ls"
+            ls -la
+            npm install
+            npm run build
 
       # - *build-react-project # вызов алиаса по имени
       # - run:
