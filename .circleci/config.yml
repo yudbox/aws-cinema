@@ -203,10 +203,10 @@ jobs:
             cd ./components
             echo "components"
             ls -la
-            cd ./cd ./components
+            cd ./topHeader
             echo "topHeader"
             ls -la
-            cd ../../5
+            cd ../../
       - *build-react-project # вызов алиаса по имени
       - run:
           # в зависимости от имени ветки запускаем команду для деплоя сбилженого проекта на AWS сервис S3 bucket
