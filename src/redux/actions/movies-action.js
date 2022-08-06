@@ -45,6 +45,8 @@ export const setMovieCategory = (category) => async (dispatch) => {
 };
 
 export const getMovieDetails = (movieId) => async (dispatch) => {
+  changeSpinnerStatus(true, dispatch);
+
   try {
     const details = MOVIE_DETAILS_API_URL(movieId);
     const credits = MOVIE_CREDITS_API_URL(movieId);
@@ -54,7 +56,10 @@ export const getMovieDetails = (movieId) => async (dispatch) => {
 
     const resp = await Promise.all([details, credits, images, videos, reviews]).then((values) => values.map((value) => value.data));
 
-    dispatchMethod(SET_MOVIE_DETAILS, resp, dispatch);
+    batch(() => {
+      changeSpinnerStatus(false, dispatch);
+      dispatchMethod(SET_MOVIE_DETAILS, resp, dispatch);
+    });
   } catch (error) {
     changeSpinnerStatus(false, dispatch);
     if (error.response) {

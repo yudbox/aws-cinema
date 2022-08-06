@@ -390,18 +390,18 @@ workflows:
                 - develop
                 - staging
                 - master
-      # - deploy-to-aws-cloudfront:
-      #     requires:
-      #       - deploy-to-aws-s3
-      #     filters:
-      #       branches:
-      #         only:
-      #           - develop
-      #           - staging
-      #           - master
-      - notify-via-slack:
+      - deploy-to-aws-cloudfront:
           requires:
             - deploy-to-aws-s3
+          filters:
+            branches:
+              only:
+                - develop
+                - staging
+                - master
+      - notify-via-slack:
+          requires:
+            - deploy-to-aws-cloudfront
           filters:
             branches:
               only:
@@ -412,12 +412,12 @@ workflows:
       #     type: approval
       #     requires:
       #       - deploy-to-aws-s3
-      # - terraform-destroy:
-      #     requires:
-      #       - hold
-      #     filters:
-      #       branches:
-      #         only:
-      #           - develop
-      #           - staging
-      #           - master
+      - terraform-destroy:
+          # requires:
+          #   - hold
+          filters:
+            branches:
+              only:
+                - develop
+                - staging
+                - master
