@@ -163,10 +163,7 @@ jobs:
       - run:
           name: Show the directories
           command: |
-            echo "ls ./"
-            ls -la
-            echo "ls ../"
-            cd ../
+            cd 
             ls -la
       - run:
           name: Terraform Apply
@@ -175,7 +172,8 @@ jobs:
             terraform workspace select ${CIRCLE_BRANCH}
             terraform apply --auto-approve
             terraform output cinema_app_bucket_name > ../cinema_app_bucket_name.txt
-            terraform output cloudfront_distribution_yudbox_id > ../cloudfront_distribution_yudbox_id.txt
+
+        # terraform output cloudfront_distribution_yudbox_id > ../cloudfront_distribution_yudbox_id.txt
 
       # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
       - persist_to_workspace:
@@ -392,18 +390,18 @@ workflows:
                 - develop
                 - staging
                 - master
-      - deploy-to-aws-cloudfront:
-          requires:
-            - deploy-to-aws-s3
-          filters:
-            branches:
-              only:
-                - develop
-                - staging
-                - master
+      # - deploy-to-aws-cloudfront:
+      #     requires:
+      #       - deploy-to-aws-s3
+      #     filters:
+      #       branches:
+      #         only:
+      #           - develop
+      #           - staging
+      #           - master
       - notify-via-slack:
           requires:
-            - deploy-to-aws-cloudfront
+            - deploy-to-aws-s3
           filters:
             branches:
               only:
@@ -414,13 +412,12 @@ workflows:
       #     type: approval
       #     requires:
       #       - deploy-to-aws-s3
-      - terraform-destroy:
-          requires:
-            # - hold
-            - deploy-to-aws-s3
-          filters:
-            branches:
-              only:
-                - develop
-                - staging
-                - master
+      # - terraform-destroy:
+      #     requires:
+      #       - hold
+      #     filters:
+      #       branches:
+      #         only:
+      #           - develop
+      #           - staging
+      #           - master
