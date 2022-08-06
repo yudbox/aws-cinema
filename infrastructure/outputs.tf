@@ -7,6 +7,6 @@ output "cinema_app_bucket_name" {
   value = aws_s3_bucket.cinema_app_s3_bucket.id
 }
 
-output "cloudfront_distribution_yudbox_id" {
-  value = aws_cloudfront_distribution.s3_cinema_app_distribution.id
-}
+# output "cloudfront_distribution_yudbox_id" {
+#   value = aws_cloudfront_distribution.s3_cinema_app_distribution.id
+# }
