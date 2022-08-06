@@ -163,7 +163,10 @@ jobs:
       - run:
           name: Show the directories
           command: |
-            cd 
+            echo "ls ./"
+            ls -la
+            echo "ls ../"
+            cd ../
             ls -la
       - run:
           name: Terraform Apply
@@ -172,8 +175,7 @@ jobs:
             terraform workspace select ${CIRCLE_BRANCH}
             terraform apply --auto-approve
             terraform output cinema_app_bucket_name > ../cinema_app_bucket_name.txt
-
-        # terraform output cloudfront_distribution_yudbox_id > ../cloudfront_distribution_yudbox_id.txt
+            terraform output cloudfront_distribution_yudbox_id > ../cloudfront_distribution_yudbox_id.txt
 
       # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
       - persist_to_workspace:
