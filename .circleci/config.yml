@@ -130,6 +130,17 @@ jobs:
           name: Run prettier check
           command: npm run prettier:check
 
+  unit-tests:
+    #  использование экзекъютера
+    executor: node-executor
+    steps:
+      - checkout
+      - *show-current-branch-name # вызов алиаса по имени
+      - *restore-cache # ниже не нужно созранять node_modules в кеш т.к. это сделано в джобсе build
+      - run:
+          name: Run unit tests
+          command: npm run test
+
   terraform-validate:
     #  использование экзекъютера
     executor: terraform-executor
@@ -365,10 +376,19 @@ workflows:
                 - develop
                 - staging
                 - master
-      - terraform-validate:
+      - unit-tests:
           requires:
             - linting
             - prettier
+          filters:
+            branches:
+              only:
+                - develop
+                - staging
+                - master
+      - terraform-validate:
+          requires:
+            - unit-tests
           filters:
             branches:
               only:
