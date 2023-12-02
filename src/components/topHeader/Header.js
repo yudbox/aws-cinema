@@ -46,8 +46,9 @@ const Header = () => {
   const location = useLocation();
   const detailsRoute = useMatch("/:movieId/:name/details");
 
-  console.log("detailsRoute", detailsRoute);
-  console.log("location.pathname", location.pathname);
+  useEffect(() => {
+    throw new Error("hello guys");
+  }, []);
 
   useEffect(() => {
     dispatch(getMovies(category, 1));
